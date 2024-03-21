@@ -1,6 +1,10 @@
 // Beginning Game Programming
 // Chapter 4 - Load Bitmap program
 
+#ifdef UNICODE
+#undef UNICODE
+#endif
+
 #include <windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -9,8 +13,8 @@
 #include <iostream>
 using namespace std;
 
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
+// #pragma comment(lib, "d3d9.lib")
+// #pragma comment(lib, "d3dx9.lib")
 
 // program values
 const string APPTITLE = "Draw Bitmap Program";
@@ -76,14 +80,14 @@ bool Game_Init(HWND window)
 
     // load surface from file into newly created surface
     result = D3DXLoadSurfaceFromFile(
-        surface,      // destination surface
-        NULL,         // destination palette
-        NULL,         // destination rectangle
-        "photo.png",  // source filename
-        NULL,         // source rectangle
-        D3DX_DEFAULT, // controls how image is filtered
-        0,            // for transparency (0 for none)
-        NULL);        // source image info (usually NULL)
+        surface,        // destination surface
+        NULL,           // destination palette
+        NULL,           // destination rectangle
+        "04.photo.png", // source filename
+        NULL,           // source rectangle
+        D3DX_DEFAULT,   // controls how image is filtered
+        0,              // for transparency (0 for none)
+        NULL);          // source image info (usually NULL)
     // make sure file was loaded okay
     if (result != D3D_OK)
         return false;
@@ -136,6 +140,9 @@ LRESULT WINAPI WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         gameover = true;
         break;
+    case WM_SIZE:
+        Game_Run(hWnd);
+        break;
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
@@ -146,7 +153,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     WNDCLASSEX wc;
     // initialize window settings
     wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style = CS_HREDRAW | CS_VREDRAW;
+    //wc.style = CS_HREDRAW | CS_VREDRAW;//窗口在宽度或者高度变化的时候 重画，但是这样就会引起IE闪烁
     wc.lpfnWndProc = (WNDPROC)WinProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
@@ -176,8 +183,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!Game_Init(hwnd))
         return FALSE;
 
-    MSG message;
     // main message loop
+    MSG message;
     while (!gameover)
     {
         if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))

@@ -1,5 +1,9 @@
 // gcc main.cpp -o main -mwindows -ld3d9 -ld3dx9
 
+#ifdef UNICODE
+#undef UNICODE
+#endif
+
 #include <windows.h>
 #include <d3d9.h>
 #include <time.h>
@@ -22,7 +26,7 @@ LPDIRECT3D9 d3d = NULL;
 LPDIRECT3DDEVICE9 d3ddev = NULL;
 LPDIRECT3DSURFACE9 surface = NULL;
 
-LPDIRECT3DSURFACE9 backbuffer = NULL;
+LPDIRECT3DSURFACE9 backbuffer = NULL; // 指向d3ddev的后台缓冲区，不用释放？
 
 bool gameover = false;
 
@@ -63,7 +67,10 @@ bool Game_Init(HWND hwnd)
     srand((unsigned int)time(NULL));
 
     // clear the backbuffer to black
-    d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+    d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 0), 1.0f, 0);
+
+    // create pointer to the back buffer
+    d3ddev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
 
     // create surface
     HRESULT result = d3ddev->CreateOffscreenPlainSurface(
@@ -75,9 +82,6 @@ bool Game_Init(HWND hwnd)
         NULL);           // reserved (always NULL)
     if (result != D3D_OK)
         return false;
-
-    // create pointer to the back buffer
-    d3ddev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
 
     return true;
 }
@@ -96,7 +100,7 @@ void Game_Run(HWND hwnd)
         int r = rand() % 255;
         int g = rand() % 255;
         int b = rand() % 255;
-        d3ddev->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b));
+        d3ddev->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b)); // surface填充
 
         // copy the surface to the backbuffer
         RECT rect;
@@ -121,6 +125,9 @@ void Game_Run(HWND hwnd)
 // Game shutdown function
 void Game_End(HWND hwnd)
 {
+    // if (backbuffer)
+    //     backbuffer->Release();
+
     if (surface)
         surface->Release();
     if (d3ddev)
