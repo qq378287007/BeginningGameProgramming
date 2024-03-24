@@ -1,6 +1,4 @@
 #include "MyDirectX.h"
-#include <iostream>
-using namespace std;
 
 // Direct3D variables
 LPDIRECT3D9 d3d = NULL;
@@ -205,6 +203,25 @@ void Sprite_Transform_Draw(LPDIRECT3DTEXTURE9 image, int x, int y, int width, in
 
     // draw the sprite frame
     spriteobj->Draw(image, &srcRect, NULL, NULL, color);
+}
+
+// bounding  box collision detection
+int Collision(SPRITE sprite1, SPRITE sprite2)
+{
+    RECT rect1;
+    rect1.left = (long)sprite1.x;
+    rect1.top = (long)sprite1.y;
+    rect1.right = (long)sprite1.x + sprite1.width * sprite1.scaling;
+    rect1.bottom = (long)sprite1.y + sprite1.height * sprite1.scaling;
+
+    RECT rect2;
+    rect2.left = (long)sprite2.x;
+    rect2.top = (long)sprite2.y;
+    rect2.right = (long)sprite2.x + sprite2.width * sprite2.scaling;
+    rect2.bottom = (long)sprite2.y + sprite2.height * sprite2.scaling;
+
+    RECT dest; // ignored
+    return IntersectRect(&dest, &rect1, &rect2);
 }
 
 bool DirectInput_Init(HWND hwnd)
