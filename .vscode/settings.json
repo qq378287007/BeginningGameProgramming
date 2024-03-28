@@ -3,9 +3,5 @@
     {
         "c": "cd /d $dir && gcc $fileName -o $fileNameWithoutExt -mwindows -ld3d9 -ld3dx9 -ldinput8 -lxinput -ldxguid -lwinmm -ldsound -luuid  && $dir$fileNameWithoutExt",
         "cpp": "cd /d $dir && g++ $fileName -o $fileNameWithoutExt -mwindows -ld3d9 -ld3dx9 -ldinput8 -lxinput && $dir$fileNameWithoutExt"
-    },
-    "files.associations": {
-        "*.rh": "c",
-        "string": "cpp"
     }
 }

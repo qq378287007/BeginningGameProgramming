@@ -1,0 +1,9 @@
+{
+    "code-runner.executorMap": 
+    {    
+        "cpp": "cd /d $dir && g++ *.cpp -o $fileNameWithoutExt -mwindows -ld3d9 -ld3dx9 -ldinput8 -lxinput -ldxguid -lwinmm -ldsound -luuid && $dir$fileNameWithoutExt"
+    },
+    "files.associations": {
+        "iomanip": "cpp"
+    }
+}

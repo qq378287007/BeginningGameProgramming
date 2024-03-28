@@ -1,8 +1,8 @@
-/*  Beginning Game Programming
-    MyDirectX.h
-*/
-
 #pragma once
+
+#ifdef UNICODE
+#undef UNICODE
+#endif
 
 //header files
 #define WIN32_EXTRA_LEAN

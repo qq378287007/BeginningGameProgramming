@@ -22,9 +22,9 @@ const int WINDOWHEIGHT = (SCREENH / TILEHEIGHT) * TILEHEIGHT;
 const int GAMEWORLDWIDTH = TILEWIDTH * MAPWIDTH;
 const int GAMEWORLDHEIGHT = TILEHEIGHT * MAPHEIGHT;
 
-int ScrollX, ScrollY;
-int SpeedX, SpeedY;
-long start;
+int ScrollX = 0, ScrollY = 0;
+int SpeedX = 0, SpeedY = 0;
+long start = 0;
 LPDIRECT3DSURFACE9 gameworld = NULL;
 
 int MAPDATA[MAPWIDTH * MAPHEIGHT] = {
@@ -56,7 +56,6 @@ void DrawTile(LPDIRECT3DSURFACE9 source, // source surface image
               int destx,                 // destination x
               int desty)                 // destination y
 {
-
     // create a RECT to describe the source image
     RECT r1;
     r1.left = (tilenum % columns) * width;
@@ -73,34 +72,26 @@ void DrawTile(LPDIRECT3DSURFACE9 source, // source surface image
 
 void BuildGameWorld()
 {
-    HRESULT result;
-    int x, y;
-    LPDIRECT3DSURFACE9 tiles;
-
-    // load the bitmap image containing all the tiles
-    tiles = LoadSurface("groundtiles.bmp");
-
     // create the scrolling game world bitmap
-    result = d3ddev->CreateOffscreenPlainSurface(
+    HRESULT result = d3ddev->CreateOffscreenPlainSurface(
         GAMEWORLDWIDTH,  // width of the surface
         GAMEWORLDHEIGHT, // height of the surface
         D3DFMT_X8R8G8B8,
         D3DPOOL_DEFAULT,
         &gameworld, // pointer to the surface
         NULL);
-
     if (result != D3D_OK)
     {
         MessageBox(NULL, "Error creating working surface!", "Error", 0);
         return;
     }
 
+    // load the bitmap image containing all the tiles
+    LPDIRECT3DSURFACE9 tiles = LoadSurface("groundtiles.bmp");
     // fill the gameworld bitmap with tiles
-    for (y = 0; y < MAPHEIGHT; y++)
-        for (x = 0; x < MAPWIDTH; x++)
-            DrawTile(tiles, MAPDATA[y * MAPWIDTH + x], 64, 64, 16,
-                     gameworld, x * 64, y * 64);
-
+    for (int y = 0; y < MAPHEIGHT; y++)
+        for (int x = 0; x < MAPWIDTH; x++)
+            DrawTile(tiles, MAPDATA[y * MAPWIDTH + x], 64, 64, 16, gameworld, x * 64, y * 64);
     // now the tiles bitmap is no longer needed
     tiles->Release();
 }
@@ -166,8 +157,7 @@ void ScrollScreen()
     RECT r2 = {0, 0, SCREENW - 1, SCREENH - 1};
 
     // draw the current game world view
-    d3ddev->StretchRect(gameworld, &r1, backbuffer, &r2,
-                        D3DTEXF_NONE);
+    d3ddev->StretchRect(gameworld, &r1, backbuffer, &r2, D3DTEXF_NONE);
 }
 
 void Game_Run(HWND window)
@@ -199,7 +189,6 @@ void Game_Run(HWND window)
         // start rendering
         if (d3ddev->BeginScene())
         {
-
             // update the scrolling view
             ScrollScreen();
 

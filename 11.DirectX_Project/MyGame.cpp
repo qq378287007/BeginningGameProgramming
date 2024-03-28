@@ -1,6 +1,3 @@
-// Beginning Game Programming
-// MyGame.cpp
-
 #include "MyDirectX.h"
 using namespace std;
 
